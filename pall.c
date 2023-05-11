@@ -1,9 +1,18 @@
 #include "monty.h"
 
-void pall(int i)
+/**
+ *
+ *
+ *
+ */
+void pall(stack_t **stack, __attribute__((unused)) unsigned int line_number)
 {
-	for (i = top; i >= 0; i--)
+	stack_t *current = *stack; 
+
+	/* Traverse the stack and print its elements */
+	while (current != NULL)
 	{
-		printf("%d\n", stack[i]);
+		printf("%d\n", current->n);
+		current = current->next;
 	}
 }
