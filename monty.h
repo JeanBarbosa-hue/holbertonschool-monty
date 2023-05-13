@@ -41,7 +41,6 @@ typedef struct instruction_s
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
-/* opcodes related prototypes */
 void (*get_op_func(char *token1))(stack_t **stack, unsigned int line_number);
 void push(stack_t **h, unsigned int line_number, const char *n);
 void pop(stack_t **h, unsigned int line_number);
@@ -53,6 +52,7 @@ void pchar(stack_t **h, unsigned int line_number);
 void pstr(stack_t **h, unsigned int line_number);
 void rotl(stack_t **h, unsigned int line_number);
 void rotr(stack_t **h, unsigned int line_number);
+int is_number(const char *n);
 
 /* calculator prototypes */
 void _add(stack_t **h, unsigned int line_number);
