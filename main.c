@@ -1,46 +1,81 @@
 #include "monty.h"
 
-unsigned int line_number = 0;
-
 /**
  * main - Entry Point
  * @argc: argument count
  * @argv: argument list
  * Return: 0 on success
  */
-int main(int argc, char *argv)
+
+int main(int argc, char *argv[])
 {
-	char **tokens = NULL;
-	size_t n = 1;
-	FILE *fp;
-	char *buffer = NULL;
-	stack_t *head = NULL;
+	int fileDescriptor, isPush = 0;
+	unsigned int lineNumber = 1;
+	ssize_t bytesRead;
+	char *fileBuffer, *token;
+	stack_t *stack = NULL;
 
 	if (argc != 2)
 	{
-		fprintf(stderr, "USAGE: monty file\n");
+		printf("USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
-	fp = fopen(argv[1], "r+");
-	if (fp == NULL)
+
+	fileDescriptor = open(argv[1], O_RDONLY);
+	if (fileDescriptor == -1)
 	{
-		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
+		printf("Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	while (getline(&buffer, &n, fp) > 0)
+
+	fileBuffer = malloc(sizeof(char) * 10000);
+	if (!fileBuffer)
+		return (0);
+
+	bytesRead = read(fileDescriptor, fileBuffer, 10000);
+	if (bytesRead == -1)
 	{
-		++line_number;
-		if (strlen(buffer) == 1)
-			continue;
-		tokens = parser(buffer, DELIM); /* result is at top of list */
-		if (tokens)
+		free(fileBuffer);
+		close(fileDescriptor);
+		exit(EXIT_FAILURE);
+	}
+
+	token = strtok(fileBuffer, "\n\t\a\r ;:");
+	while (token != NULL)
+	{
+		if (isPush == 1)
 		{
-			get_op_func(tokens, &head);
-			freeArr(tokens);
+			push(&stack, lineNumber, token);
+			isPush = 0;
+			token = strtok(NULL, "\n\t\a\r ;:");
+			lineNumber++;
+			continue;
 		}
+		else if (strcmp(token, "push") == 0)
+		{
+			isPush = 1;
+			token = strtok(NULL, "\n\t\a\r ;:");
+			continue;
+		}
+		else
+		{
+			if (getOpFunc(token) != 0)
+			{
+				getOpFunc(token)(&stack, lineNumber);
+			}
+			else
+			{
+				freeDList(&stack);
+				printf("L%d: unknown instruction %s\n", lineNumber, token);
+				exit(EXIT_FAILURE);
+			}
+		}
+		lineNumber++;
+		token = strtok(NULL, "\n\t\a\r ;:");
 	}
-	free(buffer);
-	free_stack(&head);
-	fclose(fp);
+
+	freeDList(&stack);
+	free(fileBuffer);
+	close(fileDescriptor);
 	return (0);
 }

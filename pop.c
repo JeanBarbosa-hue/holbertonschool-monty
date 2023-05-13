@@ -1,31 +1,19 @@
 #include "monty.h"
 
 /**
- * pop - remove the top elem of a stack
- * @stack: pointer to top of a stack
- * @n: line number
+ * pop - removes node at front of dlinkedlist
+ * @h: head of linked list (node at the bottom of stack)
+ * @line_number: bytecode line number
  */
-void pop(stack_t **stack, unsigned int n)
+
+void pop(stack_t **h, unsigned int line_number)
 {
-	stack_t *node;
-
-	(void)n;
-
-	if (!stack || !(*stack))
+	if (h == NULL || *h == NULL)
 	{
-		fprintf(stderr, "L%u: can't pop an empty stack\n", n);
+		printf("L%u: can't pop an empty stack\n", line_number);
+		free_dlist(h);
 		exit(EXIT_FAILURE);
 	}
-
-	node = *stack;
-
-	if ((*stack)->next)
-	{
-		*stack = (*stack)->next;
-		(*stack)->prev = NULL;
-	}
 	else
-		*stack = NULL;
-
-	free(node);
+		delete_end_node(h);
 }

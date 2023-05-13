@@ -1,22 +1,23 @@
 #include "monty.h"
 
 /**
- * pall - prints a stack
- * @stack: pointer to a stack_t
- * @n: line number
+ * pall - print all nodes in stack
+ * @h: head of list
+ * @line_number: bytecode line number
  */
-void pall(stack_t **stack, unsigned int n)
+
+void pall(stack_t **h, unsigned int line_number)
 {
-	stack_t *node, *head;
-	(void)n;
+	stack_t *tmp = NULL;
 
-	if (!stack || !(*stack))
+	if (!h || !*h)
 		return;
-	node = head = *stack;
 
-	while (node)
+	(void) line_number;
+	tmp = *h;
+	while (tmp != NULL)
 	{
-		fprintf(stdout, "%d\n", node->n);
-		node = node->next;
+		printf("%d\n", tmp->n);
+		tmp = tmp->next;
 	}
 }

@@ -1,32 +1,28 @@
 #include "monty.h"
 
 /**
- * push - pushes a node to a stack
- * @stack: head of the stack
- * @n: line number
+ * push - adds node to the start of dlinkedlist
+ * @h: head of linked list (node at the bottom of stack)
+ * @line_number: bytecode line number
+ * @n: integer
  */
 
-void push(stack_t **stack, unsigned int n)
+void push(stack_t **h, unsigned int line_number, const char *n)
 {
-	stack_t *node = NULL;
-	(void)n;
-
-	node = malloc(sizeof(stack_t));
-	if (!node)
+	if (!h)
+		return;
+	if (is_number(n) == -1)
 	{
-		fprintf(stderr, "Error: malloc failed\n");
-		free_stack(stack);
+		printf("L%u: usage: push integer\n", line_number);
+		free_dlist(h);
 		exit(EXIT_FAILURE);
 	}
-
-	node->prev = node->next = NULL;
-
-	if (!(*stack))
-		(*stack) = node;
 	else
 	{
-		(*stack)->prev = node;
-		node->next = *stack;
-		*stack = node;
+		if (add_end_node(h, atoi(n)) == -1)
+		{
+			free_dlist(h);
+			exit(EXIT_FAILURE);
+		}
 	}
 }

@@ -6,46 +6,36 @@
  *
  * Return: nothing
  */
-void get_op_func(char **tokens, stack_t **stack)
+
+void (*get_op_func(char *token1))(stack_t **stack, unsigned int line_number)
 {
-	instruction_t ops[] = {
-		{"push", push},
+	int i;
+
+	instruction_t instruction_s[] = {
+		{"pop", pop},
 		{"pall", pall},
 		{"pint", pint},
-		{"pop", pop},
 		{"swap", swap},
-		{"add", add},
-		{"add", sub},
-		{"add", mul},
-		{"add", mod},
-		{"add", divh},
+		{"add", _add},
+		{"sub", _sub},
+		{"mul", _mul},
+		{"div", _div},
+		{"mod", _mod},
+		{"pchar", pchar},
+		{"pstr", pstr},
 		{"nop", nop},
-		{NULL, NULL}};
-	int idx = 0;
+		{"rotl", rotl},
+		{"rotr", rotr},
+		{NULL, NULL}
+	};
+       
+	i = 0;
 
-	while (ops[idx].opcode)
+	while (instruction_s[i].f != NULL)
 	{
-		if (tokens[0][0] == '#')
-			return;
-		if (strcmp(tokens[0], ops[idx].opcode) == 0)
-		{
-			if (ops[idx].f)
-				ops[idx].f(stack, line_number);
-			break;
-		}
-		idx++;
+		if (strcmp(token1, instruction_s[i].opcode) == 0)
+			return (instruction_s[i].f);
+		i++;
 	}
-
-	if (strcmp(tokens[0], "push") == 0)
-	{
-		is_valid(tokens, stack);
-		(*stack)->n = atoi(tokens[1]);
-	}
-	else if (!(ops[idx].opcode))
-	{
-		fprintf(stderr, "L%u: unknown instruction %s\n",
-				line_number,
-				tokens[0]);
-		exit(EXIT_FAILURE);
-	}
+	return (NULL);
 }
