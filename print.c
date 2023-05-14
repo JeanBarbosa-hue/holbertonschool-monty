@@ -1,17 +1,17 @@
 #include "monty.h"
 
 /**
- * pint - print top node in stack
- * @h: head of list
- * @line_number: bytecode line number
+ * pint - prints the value at the top of the stack
+ * @stack: double pointer to the head of the stack
+ * @line_number: line number of the command in the Monty bytecode file
  */
-void pint(stack_t **h, unsigned int line_number)
+void pint(stack_t **stack, unsigned int line_number)
 {
-	if (!h || !*h)
+	if (!stack || !(*stack)) /* If stack is empty */
 	{
-		printf("L%u: can't pint, stack empty\n", line_number);
+		fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	printf("%d\n", (*h)->n);
 
+	printf("%d\n", (*stack)->n); /* Print the value at the top of the stack */
 }
