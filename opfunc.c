@@ -1,41 +1,40 @@
 #include "monty.h"
+
 /**
- * get_op_func - call appropriate function
- * @tokens: pointer to array of tokens
- * @stack: pointer to a stack
- *
- * Return: nothing
+ * execute_opcode - Executes the opcode function based on the given opcode.
+ * @stack: Double pointer to the head of the stack.
+ * @opcode: Opcode string to be executed.
+ * @line_number: Line number of the command in the Monty bytecode file.
  */
 
-void (*get_op_func(char *token1))(stack_t **stack, unsigned int line_number)
+void execute_opcode(stack_t **stack, char *opcode, unsigned int line_number)
 {
-	int i;
+	int j;
 
-	instruction_t instruction_s[] = {
-		{"pop", pop},
+	/*Define an array of opcodes and their corresponding functions*/
+	instruction_t instructions[] = {
+		{"push", push},
 		{"pall", pall},
 		{"pint", pint},
+		{"pop", pop},
 		{"swap", swap},
-		{"add", _add},
-		{"sub", _sub},
-		{"mul", _mul},
-		{"div", _div},
-		{"mod", _mod},
-		{"pchar", pchar},
-		{"pstr", pstr},
+		{"add", add},
 		{"nop", nop},
-		{"rotl", rotl},
-		{"rotr", rotr},
 		{NULL, NULL}
 	};
-       
-	i = 0;
 
-	while (instruction_s[i].f != NULL)
+	/*Iterate through the instructions array*/
+	for (j = 0; instructions[j].opcode; j++)
 	{
-		if (strcmp(token1, instruction_s[i].opcode) == 0)
-			return (instruction_s[i].f);
-		i++;
+		/*If the opcode matches execute its function*/
+		if (strcmp(opcode, instructions[j].opcode) == 0)
+		{
+			instructions[j].f(stack, line_number);
+			return;
+		}
 	}
-	return (NULL);
+
+	/*If the opcode is not found print an error message and exit*/
+	fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
+	exit(EXIT_FAILURE);
 }

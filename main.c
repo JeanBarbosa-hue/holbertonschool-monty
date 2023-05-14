@@ -7,8 +7,6 @@
  * Return: EXIT_SUCCESS on success, otherwise EXIT_FAILURE.
  */
 
-void execute_opcode(stack_t **stack, char *opcode, unsigned int line_number);
-
 global_t *global_variable = NULL;
 
 int main(int argc, char **argv)
@@ -36,7 +34,6 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	/*Allocate memory for the global variable*/
 	global_variable = malloc(sizeof(global_t));
 	if (!global_variable)
 	{
@@ -50,11 +47,11 @@ int main(int argc, char **argv)
 	{
 		line_number++;
 
-		/*Remove newline character if present*/
 		if (line[read - 1] == '\n')
+		{
 			line[read - 1] = '\0';
+		}
 
-		/*Tokenize the line to get the opcode and its argument (if any)*/
 		opcode = strtok(line, " \t");/*Added '\t' to handle tab characters*/
 		/*Check if the line is not empty or starts with a comment*/
 		if (opcode != NULL && opcode[0] != '#')
@@ -65,7 +62,6 @@ int main(int argc, char **argv)
 		execute_opcode(&stack, opcode, line_number);
 		}
 
-		/*Free the line buffer and reset the length*/
 		free(line);
 		line = NULL;
 		len = 0;
