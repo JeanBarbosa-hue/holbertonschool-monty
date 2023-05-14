@@ -1,13 +1,13 @@
 #include "monty.h"
 
 /**
- * nop - doesn’t do anything
- * @stack: pointer to a stack_t
- * @line_number: line number
+ * nop - does nothing
+ * @stack: double pointer to the head of the stack
+ * @line_number: line number of the command in the Monty bytecode file
  */
 
-void nop(stack_t **h, unsigned int line_number)
+void nop(stack_t **stack, unsigned int line_number)
 {
-	(void) h;
-	(void) line_number;
+	(void)stack;
+	(void)line_number;
 }
