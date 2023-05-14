@@ -8,7 +8,7 @@
 
 void push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *new_node;/*Declare a pointer to the new node*/
+	stack_t *new_node;
 
 	/*No stack or no argument, print an error message and exit*/
 	if (!stack || !global_variable->argument)
@@ -17,8 +17,9 @@ void push(stack_t **stack, unsigned int line_number)
 		exit(EXIT_FAILURE);
 	}
 
-	/*Allocate memory for the new node and check for allocation failure*/
+
 	new_node = malloc(sizeof(stack_t));
+
 	if (!new_node)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
@@ -30,7 +31,9 @@ void push(stack_t **stack, unsigned int line_number)
 	new_node->prev = NULL;/*Set the 'prev' pointer of the new node to NULL*/
 	/*Set the next pointer of the new node to the curent head of the stack*/
 	new_node->next = *stack;
+
 	if (*stack)/*If there's an existing head of the stack*/
 		(*stack)->prev = new_node;/*Set its 'prev' pointer to the new node*/
+
 	*stack = new_node;/*Set the head of the stack to the new node*/
 }

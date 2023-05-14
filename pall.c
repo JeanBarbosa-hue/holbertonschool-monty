@@ -6,16 +6,15 @@
  * @line_number: line number of the command in the Monty bytecode file (unused)
  */
 
-void pall(stack_t **stack, unsigned int line_number)
+void pall(stack_t **stack, __attribute__((unused)) unsigned int line_number)
 {
-	stack_t *current;
+	stack_t *ptrNode;
 
-	(void)line_number;/*Unused variable, silence the compiler warning*/
-
-	current = *stack;/*Set the current node to the head of the stack*/
-	while (current)/*While there is a node in the stack*/
+	ptrNode = *stack; /* Set the current node to the head of the stack */
+	
+	while (ptrNode)
 	{
-		printf("%d\n", current->n);/*Print the integer value of the current node*/
-		current = current->next;/*Move to the next node in the stack*/
+		printf("%d\n", ptrNode->n); /* Print the integer value of the current node */
+		ptrNode = ptrNode->next; /* Move to the next node in the stack */
 	}
 }
