@@ -1,75 +1,72 @@
 #include "monty.h"
 
 /**
- * main - Entry Point
- * @argc: argument count
- * @argv: argument list
- * Return: 0 on success
+ * main - Entry point of the program.
+ * @argc: The number of command-line arguments.
+ * @argv: An array of pointers to the arguments.
+ * Return: EXIT_SUCCESS on success, otherwise EXIT_FAILURE.
  */
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-	int fd, ispush = 0;
-	unsigned int line = 1;
-	ssize_t n_read;
-	char *buffer, *token;
-	stack_t *h = NULL;
+	FILE *file;
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	unsigned int line_number = 0;
+	char *opcode;
+	stack_t *stack = NULL;
 
 	if (argc != 2)
 	{
-		printf("USAGE: monty file\n");
+		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
+
+	/*Open the Monty bytecode file*/
+	file = fopen(argv[1], "r");
+	if (!file)
 	{
-		printf("Error: Can't open file %s\n", argv[1]);
+		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	buffer = malloc(sizeof(char) * 10000);
-	if (!buffer)
-		return (0);
-	n_read = read(fd, buffer, 10000);
-	if (n_read == -1)
+
+	glob = malloc(sizeof(global_t));
+	if (!glob)
 	{
-		free(buffer);
-		close(fd);
+		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	token = strtok(buffer, "\n\t\a\r ;:");
-	while (token != NULL)
+	glob->argument = NULL;
+
+	while ((read = getline(&line, &len, file)) != -1)
 	{
-		if (ispush == 1)
+		line_number++;
+
+		if (line[read - 1] == '\n')
+			line[read - 1] = '\0';
+
+		opcode = strtok(line, " \t");
+		/*Check if the line is not empty or starts with a comment*/
+		if (opcode != NULL && opcode[0] != '#')
 		{
-			push(&h, line, token);
-			ispush = 0;
-			token = strtok(NULL, "\n\t\a\r ;:");
-			line++;
-			continue;
+		glob->argument = strtok(NULL, " \t");
+
+		/*Execute the opcode*/
+		execute_opcode(&stack, opcode, line_number);
 		}
-		else if (strcmp(token, "push") == 0)
-		{
-			ispush = 1;
-			token = strtok(NULL, "\n\t\a\r ;:");
-			continue;
-		}
-		else
-		{
-			if (get_op_func(token) != 0)
-			{
-				get_op_func(token)(&h, line);
-			}
-			else
-			{
-				free_dlist(&h);
-				printf("L%d: unknown instruction %s\n", line, token);
-				exit(EXIT_FAILURE);
-			}
-		}
-		line++;
-		token = strtok(NULL, "\n\t\a\r ;:");
+
+		/*Free the line buffer and reset the length*/
+		free(line);
+		line = NULL;
+		len = 0;
 	}
-	free_dlist(&h); free(buffer);
-	close(fd);
-	return (0);
+
+	/*Close the file and free the memory*/
+	fclose(file);
+	free(line);
+	free(glob);
+	free_stack(stack);
+
+	return (EXIT_SUCCESS);
 }
