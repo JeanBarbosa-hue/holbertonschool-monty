@@ -7,6 +7,10 @@
  * Return: EXIT_SUCCESS on success, otherwise EXIT_FAILURE.
  */
 
+void execute_opcode(stack_t **stack, char *opcode, unsigned int line_number);
+
+global_t *global_variable = NULL;
+
 int main(int argc, char **argv)
 {
 	FILE *file;
@@ -17,6 +21,7 @@ int main(int argc, char **argv)
 	char *opcode;
 	stack_t *stack = NULL;
 
+	/*Check if the correct number of arguments is provided*/
 	if (argc != 2)
 	{
 		fprintf(stderr, "USAGE: monty file\n");
@@ -31,26 +36,30 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	glob = malloc(sizeof(global_t));
-	if (!glob)
+	/*Allocate memory for the global variable*/
+	global_variable = malloc(sizeof(global_t));
+	if (!global_variable)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	glob->argument = NULL;
+	global_variable->argument = NULL;
 
+	/*Read the file line by line*/
 	while ((read = getline(&line, &len, file)) != -1)
 	{
 		line_number++;
 
+		/*Remove newline character if present*/
 		if (line[read - 1] == '\n')
 			line[read - 1] = '\0';
 
-		opcode = strtok(line, " \t");
+		/*Tokenize the line to get the opcode and its argument (if any)*/
+		opcode = strtok(line, " \t");/*Added '\t' to handle tab characters*/
 		/*Check if the line is not empty or starts with a comment*/
 		if (opcode != NULL && opcode[0] != '#')
 		{
-		glob->argument = strtok(NULL, " \t");
+		global_variable->argument = strtok(NULL, " \t");
 
 		/*Execute the opcode*/
 		execute_opcode(&stack, opcode, line_number);
@@ -65,7 +74,7 @@ int main(int argc, char **argv)
 	/*Close the file and free the memory*/
 	fclose(file);
 	free(line);
-	free(glob);
+	free(global_variable);
 	free_stack(stack);
 
 	return (EXIT_SUCCESS);
