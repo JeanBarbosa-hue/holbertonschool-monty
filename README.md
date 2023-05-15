@@ -1,17 +1,16 @@
-Holberton School Monty
+**Holberton School Monty**
 
 This repository contains the source code for the Monty project, developed as part of the curriculum at Holberton School. Monty is a simple interpreter for Monty Bytecode files.
-Table of Contents
+**Table of Contents**
 
     Introduction
     Installation
     Usage
     Monty Bytecode
     Example
-    Contributing
-    License
+    Creators
 
-Introduction
+**Introduction**
 
 Monty is a project developed at Holberton School to create an interpreter for Monty Bytecode files. Monty Bytecode is a minimalistic language that provides a set of stack-based operations. The interpreter reads a Monty Bytecode file and executes the operations specified in the file.
 
@@ -36,7 +35,7 @@ Compile the source code:
 
     gcc -Wall -Werror -Wextra -pedantic *.c -o monty
 
-Usage
+**Usage**
 
 Once the source code is compiled, you can use the Monty interpreter as follows:
 
@@ -83,6 +82,6 @@ The output will be:
 2
 1
 
-Creators
+**Creators**
   Luis Ayala(https://github.com/luisayala323)
   Jean Barbosa(https://github.com/JeanBarbosa-hue)
